@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agents and Agent Harnesses — Pi Research Agent Workshop</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d8dee8;
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --accent: #2563eb;
+      --accent-2: #0f766e;
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    .deck {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    header, footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.92);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+    main {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .slide {
+      width: min(1120px, 100%);
+      min-height: min(680px, calc(100vh - 140px));
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: clamp(28px, 5vw, 64px);
+      box-shadow: 0 18px 60px rgba(15, 23, 42, .08);
+    }
+    .slide.active {
+      display: grid;
+      align-content: center;
+      gap: 28px;
+    }
+    .eyebrow {
+      color: var(--accent-2);
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    h1, h2 {
+      margin: 0;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+    h1 { font-size: clamp(44px, 7vw, 86px); max-width: 960px; }
+    h2 { font-size: clamp(36px, 5vw, 62px); max-width: 980px; }
+    p {
+      margin: 0;
+      font-size: clamp(20px, 2.4vw, 30px);
+      line-height: 1.35;
+      max-width: 980px;
+    }
+    .small { font-size: 17px; color: var(--muted); }
+    ul, ol {
+      margin: 0;
+      padding-left: 1.2em;
+      display: grid;
+      gap: 14px;
+      max-width: 980px;
+      font-size: clamp(20px, 2.2vw, 30px);
+      line-height: 1.3;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      width: 100%;
+    }
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      background: #fbfcff;
+    }
+    .box h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+    .box p, .box li { font-size: 18px; }
+    .box ul { font-size: 18px; gap: 8px; }
+    .metric {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      width: 100%;
+    }
+    .score {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px;
+      background: #fbfcff;
+    }
+    .score strong {
+      display: block;
+      font-size: clamp(34px, 5vw, 56px);
+      color: var(--accent);
+    }
+    .arrow {
+      color: var(--accent-2);
+      font-size: 40px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .note {
+      border-left: 4px solid var(--accent);
+      padding: 14px 18px;
+      color: #344054;
+      background: #eef4ff;
+      font-size: 18px;
+      line-height: 1.45;
+      max-width: 960px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #eef2f7;
+      padding: .08em .3em;
+      border-radius: 5px;
+      font-size: .9em;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--ink);
+      font: inherit;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--accent); }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress {
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      min-width: 160px;
+    }
+    .bar { height: 100%; width: 0; background: var(--accent); }
+    @media (max-width: 760px) {
+      header, footer { padding: 10px 12px; font-size: 12px; }
+      main { padding: 12px; }
+      .slide { min-height: calc(100vh - 112px); padding: 24px; }
+      .metric { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+      .controls button { padding: 7px 9px; }
+      .progress { min-width: 90px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <header>
+      <div class="brand"><span class="mark"></span><span>Pi Research Agent Workshop</span></div>
+      <div class="controls">
+        <button id="prev" type="button" aria-label="Previous slide">Prev</button>
+        <button id="next" type="button" aria-label="Next slide">Next</button>
+        <span id="count">1 / 15</span>
+      </div>
+    </header>
+    <main>
+      <section class="slide active">
+        <div class="eyebrow">20-minute opening talk</div>
+        <h1>Agents and Agent Harnesses</h1>
+        <p>From using AI tools to packaging reliable specialist capabilities.</p>
+        <div class="note">Run time: 20 minutes. Then participants build, specialize, harness, and measure a Pi research agent.</div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">0-3 minutes</div>
+        <h2>What makes an agent different from a chatbot?</h2>
+        <ul>
+          <li>A chatbot answers in the moment.</li>
+          <li>An agent works inside a system: files, tools, instructions, state, and feedback.</li>
+          <li>A useful agent leaves artifacts another person or system can inspect.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Agent anatomy</div>
+        <h2>Agent = model + role + context + tools + checks</h2>
+        <div class="grid">
+          <div class="box"><h3>Role</h3><p>What job is this agent hired to do?</p></div>
+          <div class="box"><h3>Tools</h3><p>What actions can it safely take?</p></div>
+          <div class="box"><h3>Context</h3><p>What files, examples, and memory guide it?</p></div>
+          <div class="box"><h3>Checks</h3><p>How do we know the result is usable?</p></div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">OpenClaw pattern</div>
+        <h2>Production agent teams use specialized roles</h2>
+        <ul>
+          <li>Orchestrator: chooses the route and owns final synthesis.</li>
+          <li>Researcher: gathers context and evidence.</li>
+          <li>Builder: edits code or artifacts.</li>
+          <li>QA: tests behavior and finds failure modes.</li>
+          <li>Planner: turns goals into constraints and acceptance criteria.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">3-7 minutes</div>
+        <h2>Specialization is more than a better prompt</h2>
+        <ul>
+          <li>Prompt: the instruction.</li>
+          <li>Tool: the action surface.</li>
+          <li>Skill: reusable procedure.</li>
+          <li>Domain pack: local expertise and examples.</li>
+          <li>Harness: boundaries, telemetry, and validation.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">7-12 minutes</div>
+        <h2>Prompts ask. Harnesses enforce.</h2>
+        <div class="grid">
+          <div class="box">
+            <h3>Prompt-only agent</h3>
+            <ul>
+              <li>Can sound correct.</li>
+              <li>May skip evidence boundaries.</li>
+              <li>May use tools inconsistently.</li>
+              <li>Produces prose, not proof.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Harnessed specialist</h3>
+            <ul>
+              <li>Tool policy constrains actions.</li>
+              <li>Evidence gate validates output.</li>
+              <li>Trace artifacts show what happened.</li>
+              <li>Harness report becomes a trust artifact.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Harness components</div>
+        <h2>A harness wraps the model with operating rules</h2>
+        <ul>
+          <li>Allowed tools and blocked actions.</li>
+          <li>Evidence requirements and source boundaries.</li>
+          <li>Output schema and quality checklist.</li>
+          <li>Telemetry: traces, logs, provenance, and reports.</li>
+          <li>Recovery path when providers or tools fail.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">12-16 minutes</div>
+        <h2>Measuring improvement needs a baseline</h2>
+        <div class="metric">
+          <div class="score"><span>Generic</span><strong>0 / 5</strong><p class="small">Loose prompt, weak evidence, no enforceable checks.</p></div>
+          <div class="arrow">→</div>
+          <div class="score"><span>Harnessed</span><strong>5 / 5</strong><p class="small">Policy, evidence, provenance, trace, validation.</p></div>
+        </div>
+        <div class="note">The exact number matters less than the visible delta. Participants should see what changed and why.</div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Workshop lab</div>
+        <h2>The hands-on loop</h2>
+        <ol>
+          <li>Run a generic research brief agent.</li>
+          <li>Add tools, domain context, and specialist instructions.</li>
+          <li>Run loose agent vs harnessed agent.</li>
+          <li>Build the scorecard.</li>
+          <li>Inspect <code>harness-report.json</code> and compare outputs.</li>
+        </ol>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Telemetry</div>
+        <h2>What telemetry teaches us</h2>
+        <ul>
+          <li>Which tool paths were actually used?</li>
+          <li>Where did the agent skip evidence or overclaim?</li>
+          <li>Did model swap change quality or just wording?</li>
+          <li>Which failure should become the next harness rule?</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Trust artifact</div>
+        <h2>The report is part of the product</h2>
+        <ul>
+          <li>Inputs used.</li>
+          <li>Tools called.</li>
+          <li>Evidence checked.</li>
+          <li>Validation result.</li>
+          <li>Known limitations and review boundaries.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Reddi Agent Protocol bridge</div>
+        <h2>A specialist listing should expose its harness</h2>
+        <ul>
+          <li>Input contract.</li>
+          <li>Allowed tools.</li>
+          <li>Evidence policy.</li>
+          <li>Validation report.</li>
+          <li>Trace or audit artifact.</li>
+          <li>Price and usage assumptions.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">16-20 minutes</div>
+        <h2>What participants will build now</h2>
+        <ul>
+          <li>A local Pi research agent in Docker.</li>
+          <li>A generic baseline brief.</li>
+          <li>A specialist arXiv/domain-pack brief.</li>
+          <li>A harnessed run with scorecard and report.</li>
+          <li>A clearer sense of what could be sold or reused.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Close</div>
+        <h2>Your workflow can become a capability</h2>
+        <p>When the model, tools, context, harness, and evidence trail travel together, an agent stops being a demo and starts becoming a reusable product.</p>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Workshop links</div>
+        <h2>Start here</h2>
+        <ul>
+          <li>GitHub: <code>github.com/nissan/pi-research-agent-workshop</code></li>
+          <li>Docker: <code>nissan/pi-research-agent-workshop:latest</code></li>
+          <li>Guide: <code>velvet-brook-srne.here.now</code></li>
+          <li>Tester worksheet: <code>scarlet-rosette-zzyn.here.now</code></li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <span>Use arrow keys or buttons to navigate.</span>
+      <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+    </footer>
+  </div>
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const count = document.getElementById('count');
+    const bar = document.getElementById('bar');
+    let index = 0;
+    function show(next) {
+      index = Math.max(0, Math.min(slides.length - 1, next));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      count.textContent = (index + 1) + ' / ' + slides.length;
+      bar.style.width = (((index + 1) / slides.length) * 100) + '%';
+      location.hash = String(index + 1);
+    }
+    document.getElementById('prev').addEventListener('click', () => show(index - 1));
+    document.getElementById('next').addEventListener('click', () => show(index + 1));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') show(index + 1);
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') show(index - 1);
+      if (event.key === 'Home') show(0);
+      if (event.key === 'End') show(slides.length - 1);
+    });
+    const start = Number(location.hash.replace('#', ''));
+    if (Number.isInteger(start) && start > 0) index = start - 1;
+    show(index);
+  </script>
+</body>
+</html>
