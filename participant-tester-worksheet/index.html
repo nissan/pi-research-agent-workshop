@@ -92,6 +92,10 @@ docker exec -it pi-research-agent-workshop bash</code></pre>
   <section class="card">
     <h2>1. Pull the published Docker image</h2>
     <p>Start here. This confirms the image is publicly available and the tester is not using a local build by accident.</p>
+    <p>Optional source clone/download path:</p>
+    <pre><code>git clone https://github.com/nissan/pi-research-agent-workshop.git
+cd pi-research-agent-workshop</code></pre>
+    <p>The source repo should be public and should contain the starter workspace, solution workspace, Docker workshop UI, fallback outputs, facilitator docs, and preflight script.</p>
     <pre><code>docker pull nissan/pi-research-agent-workshop:latest</code></pre>
     <p>Current expected public digest: <code>sha256:ae32cc47b204690c7c065cbb9a3fabaed745f66fb963576c52a2f44dcd8c2e59</code>.</p>
     <h3>Expected</h3>

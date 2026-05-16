@@ -3,7 +3,8 @@
 ## Build and run with Compose
 
 ```bash
-cd projects/redditech-academy/roadshows/prosumer-to-specialist-agents
+git clone https://github.com/nissan/pi-research-agent-workshop.git
+cd pi-research-agent-workshop
 docker compose -f docker-compose.workshop.yml up --build
 ```
 

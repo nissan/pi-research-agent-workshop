@@ -2,6 +2,15 @@
 
 ## 1. Pull the image
 
+Optional source clone/download:
+
+```bash
+git clone https://github.com/nissan/pi-research-agent-workshop.git
+cd pi-research-agent-workshop
+```
+
+You do not need the source repo to participate if Docker is working; the clone is a fallback for inspecting files, downloading the starter/solution, or running local checks.
+
 ```bash
 docker pull nissan/pi-research-agent-workshop:latest
 ```
@@ -12,7 +21,7 @@ Current verified public digest:
 sha256:ae32cc47b204690c7c065cbb9a3fabaed745f66fb963576c52a2f44dcd8c2e59
 ```
 
-Until the public image is pushed, facilitators can use the local build tag:
+Facilitators can also rebuild locally from the cloned repo if needed:
 
 ```bash
 docker build -f docker-workshop/Dockerfile -t nissan/pi-research-agent-workshop:local .
