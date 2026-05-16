@@ -35,6 +35,7 @@ For live model runs, use one of these credential paths:
 ## Core Docs
 
 - [20-minute presentation: Agents and Agent Harnesses](https://floral-vault-pz99.here.now/)
+- [Participant workshop guide](https://dapper-globe-mjt7.here.now/)
 - [Presentation source](presentation/index.html)
 - [Participant Docker Quickstart](PARTICIPANT-DOCKER-QUICKSTART.md)
 - [Run Workshop Locally](RUN-WORKSHOP-LOCALLY.md)
