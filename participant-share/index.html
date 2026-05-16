@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pi Research Agent Workshop — Participant Guide</title>
+  <style>
+    :root { color-scheme: light; --ink:#101828; --muted:#475467; --card:#fff; --bg:#f6f7fb; --brand:#5b5bd6; --line:#d0d5dd; --code:#111827; }
+    body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:var(--bg); color:var(--ink); line-height:1.55; }
+    header { background:linear-gradient(135deg,#111827,#4f46e5); color:white; padding:48px 22px; }
+    main { max-width:1000px; margin:0 auto; padding:28px 18px 70px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); line-height:1; }
+    h2 { margin-top:0; font-size:1.45rem; }
+    h3 { margin-bottom:6px; }
+    a { color:#3730a3; }
+    .subtitle { font-size:1.18rem; max-width:760px; opacity:.94; }
+    .pill { display:inline-block; border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:6px 12px; margin:4px 6px 0 0; font-size:.9rem; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px; margin:16px 0; box-shadow:0 6px 20px rgba(16,24,40,.05); }
+    .callout { border-left:5px solid var(--brand); background:#eef2ff; padding:14px 16px; border-radius:12px; }
+    .warn { border-left-color:#f79009; background:#fffaeb; }
+    .success { border-left-color:#12b76a; background:#ecfdf3; }
+    pre { background:var(--code); color:#f9fafb; padding:14px; border-radius:12px; overflow-x:auto; font-size:.92rem; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background:#eef2ff; padding:2px 5px; border-radius:5px; }
+    pre code { background:transparent; padding:0; }
+    ol li, ul li { margin:7px 0; }
+    table { border-collapse:collapse; width:100%; overflow:hidden; border-radius:12px; }
+    th,td { border:1px solid var(--line); padding:10px; text-align:left; vertical-align:top; }
+    th { background:#f2f4f7; }
+    .small { color:var(--muted); font-size:.93rem; }
+    .toc a { display:block; padding:6px 0; }
+    .footer { color:var(--muted); font-size:.9rem; margin-top:30px; }
+  </style>
+</head>
+<body>
+<header>
+  <div style="max-width:1000px;margin:0 auto;">
+    <div class="pill">Redditech Academy</div><div class="pill">Pi.dev</div><div class="pill">Specialist Agents</div>
+    <h1>Build a Specialist Research Agent</h1>
+    <p class="subtitle">Participant guide for the hands-on workshop: run a general Pi research agent using either Pi login with your OpenAI Codex subscription or an OpenRouter API key with about $5 credit, specialize it with tools and domain packs, swap models later, then prove the difference with an agent harness.</p>
+  </div>
+</header>
+<main>
+  <section class="card callout success">
+    <strong>Outcome:</strong> by the end, you will have a working research brief agent that can produce a generic brief, a specialized domain brief, and a harness report showing whether the output followed the rules.
+  </section>
+
+  <section class="card toc">
+    <h2>Quick links</h2>
+    <a href="#requirements">1. Requirements</a>
+    <a href="#start">2. Start the workshop image</a>
+    <a href="#baseline">3. Run the baseline: Pi login or OpenRouter</a>
+    <a href="#specialize">4. Specialize the research agent</a>
+    <a href="#harness">5. Use the harness</a>
+    <a href="#openrouter">6. Model swap: OpenAI → OpenRouter or OpenRouter model A → B</a>
+    <a href="#domain-packs">7. Choose a domain pack</a>
+    <a href="#troubleshooting">8. Troubleshooting</a>
+  </section>
+
+  <section id="requirements" class="card">
+    <h2>1. Requirements</h2>
+    <ul>
+      <li>Docker Desktop or Docker Engine installed.</li>
+      <li>Internet access.</li>
+      <li>Credential lane A: an OpenAI Codex subscription, registered through Pi's <code>/login</code> flow inside the container.</li>
+      <li>Credential lane B: an OpenRouter account and token from <a href="https://openrouter.ai/settings/keys">openrouter.ai/settings/keys</a>, with about <strong>$5 credit</strong> added before class if you want fewer interruptions.</li>
+    </ul>
+    <div class="callout warn"><strong>Do not paste secrets into project files.</strong> Tokens should be provided as runtime environment variables or via Pi login only.</div>
+  <div class="callout warn"><strong>OpenRouter free-lane warning:</strong> OpenRouter <code>:free</code> models are request-limited. Official docs describe a 20 requests/minute cap plus daily request caps that improve after buying credits; accounts with low/negative balance can also see <code>402 insufficient credits</code>. For a group workshop, assume free-only keys may run out quickly. Add about <strong>$5 credit</strong> before class, or rely on the automatic fallback outputs.</div>
+  </section>
+
+  <section id="start" class="card">
+    <h2>2. Start the workshop image</h2>
+    <p>Pull and run the public Docker image:</p>
+    <pre><code>docker pull nissan/pi-research-agent-workshop:latest
+
+docker run --rm -it \
+  --name pi-research-agent-workshop \
+  -p 8787:8787 \
+  -v pi_workshop_home:/home/piuser/.pi \
+  -v pi_workshop_outputs:/workshop/starter/outputs \
+  nissan/pi-research-agent-workshop:latest</code></pre>
+    <p class="small">Use this command for the Pi/OpenAI Codex subscription lane. The two <code>-v</code> lines preserve Pi auth/session state and workshop outputs if you restart the container.</p>
+    <p>For the OpenRouter lane, use a runtime key and do not reuse <code>pi_workshop_home</code> from earlier Claude/Pi tests:</p>
+    <pre><code>export OPENROUTER_API_KEY="sk-or-your-key-here"
+
+docker run --rm -it \
+  --name pi-research-agent-workshop \
+  -p 8787:8787 \
+  -e OPENROUTER_API_KEY="$OPENROUTER_API_KEY" \
+  -v pi_workshop_outputs:/workshop/starter/outputs \
+  nissan/pi-research-agent-workshop:latest</code></pre>
+    <p class="small">If you already reused stale auth, reset it with <code>docker volume rm pi_workshop_home</code> after stopping the container, then start again with the OpenRouter command above.</p>
+    <p>Open:</p>
+    <pre><code>http://localhost:8787</code></pre>
+    <p class="small">The image includes a starter workspace, fallback examples, a full solution folder if you get stuck, and UI recovery for common OpenRouter rate limits. Current verified digest: <code>sha256:ae32cc47b204690c7c065cbb9a3fabaed745f66fb963576c52a2f44dcd8c2e59</code>.</p>
+    <div class="callout warn"><strong>Stalled-run rule:</strong> every live run shows a <strong>Running...</strong> indicator. If OpenRouter returns a 429 rate limit, daily-limit message, or 402 insufficient-credit response, the app shows a clear limit message and copies fallback outputs automatically. If any other live model/tool run shows no visible progress for 3–5 minutes, stop waiting and click <strong>Use fallback sample outputs</strong>. If the browser or Docker CLI stops responding, restart Docker Desktop/Engine, rerun the same <code>docker run</code> command, then continue from fallback or the solution folder.</div>
+  </section>
+
+  <section id="baseline" class="card">
+    <h2>3. Run the baseline: Pi login or OpenRouter</h2>
+    <p>First, run the generic research agent. This gives you a baseline to compare against later. Use Pi login if you have an OpenAI Codex subscription; otherwise use the OpenRouter lane with about $5 credit.</p>
+    <ol>
+      <li>Open the workshop UI at <code>http://localhost:8787</code>.</li>
+      <li>Click <strong>Run generic agent</strong> for the Pi/OpenAI Codex login lane, or <strong>Run generic agent with OpenRouter</strong> for the OpenRouter key lane.</li>
+      <li>If Pi asks for auth, open the container terminal and run <code>/login</code> inside Pi for the Codex subscription lane, or restart with the clean <code>OPENROUTER_API_KEY</code> command above if using OpenRouter.</li>
+    </ol>
+    <p>Equivalent OpenRouter CLI prompt from inside the container:</p>
+    <pre><code>cd /workshop/starter
+pi -p \
+  --provider openrouter \
+  --model z-ai/glm-4.5-air:free \
+  "Read AGENTS.md and inputs/generic-brief-request.md. Use sources/source-notes.md. Write outputs/research-brief-generic.md. Include provider/model used, source notes used, limitations, and open questions."</code></pre>
+  </section>
+
+  <section id="specialize" class="card">
+    <h2>4. Specialize the research agent</h2>
+    <p>The generic agent is useful, but specialist agents become valuable when they have domain context, purpose-built tools, and a harness.</p>
+    <p>In this workshop, specialization can come from:</p>
+    <ul>
+      <li>a stronger task prompt;</li>
+      <li>arXiv search and ranking tools;</li>
+      <li>PDF evidence reading;</li>
+      <li>domain-pack markdown files;</li>
+      <li>the harness policy and validation tool.</li>
+    </ul>
+    <p>From the UI, click <strong>Run specialized arXiv agent</strong> for the Pi/Codex lane, or <strong>Run specialized arXiv agent with OpenRouter</strong> for the OpenRouter lane. It should produce:</p>
+    <ul>
+      <li><code>outputs/research-brief-specialized.md</code></li>
+      <li><code>outputs/delta-notes.md</code></li>
+      <li>optional arXiv/PDF evidence artifacts</li>
+    </ul>
+  </section>
+
+  <section id="harness" class="card">
+    <h2>5. Use the harness</h2>
+    <p><strong>Workshop thesis:</strong> prompts ask; harnesses enforce.</p>
+    <p>The harness adds:</p>
+    <ul>
+      <li>tool boundaries: blocks unsafe shell and non-arXiv network access;</li>
+      <li>write boundaries: restricts writes to approved folders;</li>
+      <li>evidence boundaries: requires sources, assumptions, and risks to be labelled;</li>
+      <li>output validation: checks the brief before the agent claims completion;</li>
+      <li>traceability: writes a harness report and trace log.</li>
+    </ul>
+    <p>Open the harness lab:</p>
+    <pre><code>http://localhost:8787/harness</code></pre>
+    <p>Run both:</p>
+    <ol>
+      <li><strong>Run loose agent</strong> — prompt-only behavior.</li>
+      <li><strong>Run harnessed agent</strong> — policy + evidence gate + validation.</li>
+      <li><strong>Build scorecard</strong> — compare the delta.</li>
+    </ol>
+  </section>
+
+  <section id="openrouter" class="card">
+    <h2>6. Model swap</h2>
+    <p>If you started with Pi login and an OpenAI Codex subscription, rerun the specialist with an OpenRouter model. If you started with OpenRouter, rerun the later specialist step with a second open model. Recommended first OpenRouter model:</p>
+    <pre><code>z-ai/glm-4.5-air:free</code></pre>
+    <p>Suggested later swap model, if available:</p>
+    <pre><code>qwen/qwen3-next-80b-a3b-instruct:free</code></pre>
+    <p>Why this model?</p>
+    <ul>
+      <li>open model family;</li>
+      <li>strong instruction following for its size;</li>
+      <li>good fit for demonstrating how tools + domain files + harness compensate for model changes;</li>
+      <li>small enough that the quality tradeoff is visible and teachable.</li>
+    </ul>
+    <h3>Run with an OpenRouter API key</h3>
+    <pre><code>export OPENROUTER_API_KEY="sk-or-your-key-here"
+
+docker run --rm -it \
+  --name pi-research-agent-workshop \
+  -p 8787:8787 \
+  -e OPENROUTER_API_KEY="$OPENROUTER_API_KEY" \
+  nissan/pi-research-agent-workshop:latest</code></pre>
+    <h3>Run Pi with the OpenRouter provider</h3>
+    <pre><code>cd /workshop/starter
+
+pi -p \
+  --provider openrouter \
+  --model z-ai/glm-4.5-air:free \
+  "Read AGENTS.md, inputs/generic-brief-request.md, sources/source-notes.md, and sources/domain-packs/artificial-intelligence.md. Write outputs/research-brief-specialized.md and outputs/delta-notes.md. Include provider/model used, domain pack used, evidence labels, risks, recommended next action, and open questions. Run the harness check before completion."</code></pre>
+    <div class="callout"><strong>Teaching point:</strong> swapping the LLM is easy. The important part is keeping model provenance, domain context, and harness checks stable enough that participants can compare outputs honestly.</div>
+  </section>
+
+  <section id="domain-packs" class="card">
+    <h2>7. Choose a domain pack</h2>
+    <p>The starter includes four sample markdown packs under <code>/workshop/starter/sources/domain-packs/</code>.</p>
+    <table>
+      <thead><tr><th>Domain</th><th>File</th><th>Use when you want the agent to focus on…</th></tr></thead>
+      <tbody>
+        <tr><td>Artificial Intelligence</td><td><code>artificial-intelligence.md</code></td><td>LLM evaluation, RAG, agentic tool use, hallucination mitigation, AI product readiness.</td></tr>
+        <tr><td>Blockchain Development</td><td><code>blockchain-development.md</code></td><td>Smart contracts, zero-knowledge systems, protocol assumptions, wallet/account abstraction, security risks.</td></tr>
+        <tr><td>Cloud Computing</td><td><code>cloud-computing.md</code></td><td>Kubernetes, serverless, observability, reliability, cost optimization, confidential computing.</td></tr>
+        <tr><td>Database Development</td><td><code>database-development.md</code></td><td>Vector databases, indexing, query optimization, transaction processing, distributed consistency.</td></tr>
+      </tbody>
+    </table>
+    <p>Example: database specialist run</p>
+    <pre><code>cd /workshop/starter
+
+pi -p \
+  --provider openrouter \
+  --model z-ai/glm-4.5-air:free \
+  "Create a database-development specialist brief. Read AGENTS.md, inputs/generic-brief-request.md, sources/source-notes.md, and sources/domain-packs/database-development.md. Use the domain pack's evidence checklist and output additions. Write outputs/research-brief-specialized.md and outputs/delta-notes.md. Run the harness check."</code></pre>
+  </section>
+
+  <section class="card">
+    <h2>What changes in the harness for OpenRouter?</h2>
+    <p>The harness becomes stricter. For open-model runs, your final brief must include:</p>
+    <ul>
+      <li><strong>Provider/model used</strong>, for example <code>openrouter / z-ai/glm-4.5-air:free</code>.</li>
+      <li><strong>Domain pack used</strong>, for example <code>sources/domain-packs/cloud-computing.md</code>.</li>
+      <li><strong>Evidence labels</strong>: arXiv evidence vs domain-pack context vs assumptions.</li>
+      <li><strong>Human review boundary</strong>: smaller/open models may need more review before publication.</li>
+    </ul>
+    <p>This lets you compare OpenAI vs OpenRouter honestly: if the output changes, you can tell whether the change came from the model, domain pack, or harness.</p>
+  </section>
+
+  <section id="troubleshooting" class="card">
+    <h2>8. Troubleshooting</h2>
+    <p>If provider auth, model access, network retrieval, or a long live run stalls, do not burn the workshop. After 3–5 minutes with no visible progress, use fallback outputs and continue the agent-pattern exercise.</p>
+    <ul>
+      <li><strong>Default generic button:</strong> uses Pi/OpenAI Codex login, not OpenRouter.</li>
+      <li><strong>OpenRouter lane:</strong> requires <code>OPENROUTER_API_KEY</code> and the <strong>Run generic agent with OpenRouter</strong> button.</li>
+      <li><strong>Hugging Face:</strong> no longer recommended as the free lane because Inference Providers can 403 without user/org access.</li>
+      <li><strong>Fallback:</strong> click <strong>Use fallback sample outputs</strong> if auth, rate limits, network retrieval, or a stalled live run blocks progress.</li>
+      <li><strong>Docker restart:</strong> only restart Docker Desktop/Engine if the UI or Docker CLI itself stops responding; then rerun the same Docker command and continue from fallback/solution.</li>
+    </ul>
+    <p class="small">Full collateral file: <code>TROUBLESHOOTING-FAQ.md</code>.</p>
+  </section>
+
+  <section class="card">
+    <h2>9. Common fixes</h2>
+    <h3>Docker port is busy</h3>
+    <pre><code>docker rm -f pi-research-agent-workshop
+# or use another port:
+docker run --rm -it -p 8788:8787 \
+  -v pi_workshop_home:/home/piuser/.pi \
+  -v pi_workshop_outputs:/workshop/starter/outputs \
+  nissan/pi-research-agent-workshop:latest</code></pre>
+    <h3>OpenAI/Pi auth fails</h3>
+    <ul>
+      <li>Use the fallback sample outputs in the UI.</li>
+      <li>Ask the facilitator for the runtime credential mode.</li>
+      <li>Never paste API keys into markdown files.</li>
+    </ul>
+    <h3>OpenRouter model fails or rate limits</h3>
+    <ul>
+      <li>Check <code>OPENROUTER_API_KEY</code> is set in the container environment.</li>
+      <li>If the app shows a rate-limit/daily-limit/insufficient-credit panel and copies fallback outputs, continue to <strong>Compare outputs</strong>. Treat that as provider capacity fallback, not a workshop failure.</li>
+      <li>Try again after a few minutes only if you specifically need a live model result.</li>
+      <li>Ask the facilitator for the current fallback open model.</li>
+    </ul>
+    <h3>A live run stalls</h3>
+    <ol><li>Wait up to 3–5 minutes for visible progress.</li><li>If there is no progress, click <strong>Use fallback sample outputs</strong>.</li><li>If Docker commands or the browser endpoint stop responding, restart Docker Desktop/Engine, rerun the workshop container, then continue from fallback or solution.</li></ol>
+    <h3>You get stuck</h3>
+    <p>Open the solution folder in the UI:</p>
+    <pre><code>http://localhost:8787/solution</code></pre>
+  </section>
+
+  <section class="card callout success">
+    <h2>Final checklist</h2>
+    <ul>
+      <li>Generic baseline generated with either Pi/OpenAI Codex login or OpenRouter.</li>
+      <li>Specialist brief generated.</li>
+      <li>Harness report generated.</li>
+      <li>OpenRouter / model swap attempted.</li>
+      <li>Domain pack used and named in the final brief.</li>
+      <li>Delta notes explain what improved, what regressed, and what a human should review.</li>
+    </ul>
+  </section>
+
+  <p class="footer">Redditech Academy · Pi.dev Specialist Agent Workshop · Public Docker image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:ae32cc47b204690c7c065cbb9a3fabaed745f66fb963576c52a2f44dcd8c2e59</code></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-4.1-mini",
+  "defaultThinkingLevel": "medium",
+  "hideThinkingBlock": true,
+  "tools": {
+    "read": true,
+    "write": true,
+    "edit": true,
+    "bash": true,
+    "grep": true,
+    "find": true,
+    "ls": true
+  }
+}

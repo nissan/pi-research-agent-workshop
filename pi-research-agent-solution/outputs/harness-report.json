@@ -1,0 +1,10 @@
+{
+  "pass": true,
+  "missingSections": [],
+  "checks": {
+    "hasEvidenceLabels": true,
+    "hasRiskBoundary": true,
+    "hasRecommendation": true
+  },
+  "policy": "harness/HARNESS-POLICY.md"
+}

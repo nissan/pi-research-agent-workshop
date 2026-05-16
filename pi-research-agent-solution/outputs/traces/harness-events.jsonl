@@ -1,0 +1,2 @@
+{"kind":"tool_call","toolName":"arxiv_search","note":"Harnessed run used approved arXiv tool"}
+{"kind":"tool_call","toolName":"harness_check_brief","pass":true}

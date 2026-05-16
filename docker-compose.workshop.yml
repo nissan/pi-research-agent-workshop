@@ -1,0 +1,23 @@
+services:
+  pi-research-agent-workshop:
+    image: nissan/pi-research-agent-workshop:latest
+    build:
+      context: .
+      dockerfile: docker-workshop/Dockerfile
+    container_name: pi-research-agent-workshop
+    ports:
+      - "8787:8787"
+    environment:
+      # Optional runtime-only keys. Do not commit real values.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ALT_BASELINE_MODEL: ${ALT_BASELINE_MODEL:-z-ai/glm-4.5-air:free}
+      ALT_SWAP_MODEL: ${ALT_SWAP_MODEL:-qwen/qwen3-next-80b-a3b-instruct:free}
+    volumes:
+      - pi_workshop_home:/home/piuser/.pi
+      - pi_workshop_outputs:/workshop/starter/outputs
+
+volumes:
+  pi_workshop_home:
+  pi_workshop_outputs:

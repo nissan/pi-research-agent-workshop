@@ -1,0 +1,15 @@
+.git
+.DS_Store
+**/.DS_Store
+retrospectives/
+rehearsal/screenshots/*.png
+vps-pi-docker/
+# Keep participant starter clean; solution/fallback carry completed examples.
+pi-research-agent-proof/outputs/research-brief-generic.md
+pi-research-agent-proof/outputs/research-brief-specialized.md
+pi-research-agent-proof/outputs/delta-notes.md
+pi-research-agent-proof/outputs/arxiv-results.json
+pi-research-agent-proof/outputs/arxiv-ranked-results.json
+pi-research-agent-proof/outputs/pdf-evidence-notes.md
+pi-research-agent-proof/outputs/pdfs/
+pi-research-agent-proof/outputs/traces/

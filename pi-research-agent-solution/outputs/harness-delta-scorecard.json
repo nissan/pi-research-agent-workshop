@@ -1,0 +1,6 @@
+{
+  "loose_signal_count": 1,
+  "harnessed_signal_count": 5,
+  "harness_check_pass": true,
+  "thesis": "Prompts ask; harnesses enforce tool boundaries, evidence gates, traceability, and output validation."
+}

@@ -1,0 +1,26 @@
+{
+  "name": "<specialist name>",
+  "capability": "research_brief.<specialization>.v1",
+  "description": "<one sentence>",
+  "inputSchema": {
+    "topic": "string",
+    "audience": "string",
+    "decision": "string",
+    "sources": "string[]"
+  },
+  "outputSchema": {
+    "executiveSummary": "string",
+    "findings": "string[]",
+    "risks": "string[]",
+    "recommendation": "string"
+  },
+  "price": {
+    "amount": "<starter price>",
+    "currency": "USDC"
+  },
+  "proof": {
+    "outputHash": "required",
+    "timestamp": "required",
+    "sourceManifest": "optional"
+  }
+}

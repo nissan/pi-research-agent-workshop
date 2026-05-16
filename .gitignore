@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Local runtime artifacts
+/outputs/
+/traces/
+*.log
+
+# Local credentials and env
+.env
+.env.*
+!.env.example
+**/.pi/auth*
+**/.pi/session*
+
+# Build/test cache
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
