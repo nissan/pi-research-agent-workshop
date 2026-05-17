@@ -19,18 +19,40 @@ Nissan must confirm:
 2. Login is active locally (`docker login` or `gh auth`/GHCR equivalent).
 3. Credential mode for workshop: participant `/login`, short-lived runtime key, or both.
 
-## Build
+## Build and Push Multi-Arch Image
 
 ```bash
-cd projects/redditech-academy/roadshows/prosumer-to-specialist-agents
-docker build -f docker-workshop/Dockerfile -t nissan/pi-research-agent-workshop:2026-05-roadshow .
-docker tag nissan/pi-research-agent-workshop:2026-05-roadshow nissan/pi-research-agent-workshop:latest
+cd pi-research-agent-workshop
+docker buildx create --name pi-workshop-builder --use 2>/dev/null || docker buildx use pi-workshop-builder
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -f docker-workshop/Dockerfile \
+  -t nissan/pi-research-agent-workshop:2026-05-roadshow \
+  -t nissan/pi-research-agent-workshop:latest \
+  --push \
+  .
 ```
 
-## Pre-push smoke
+## Verify Published Manifest
+
+Do not announce the public image until both platforms are present:
 
 ```bash
-./docker-workshop/tests/smoke.sh nissan/pi-research-agent-workshop:2026-05-roadshow
+docker buildx imagetools inspect nissan/pi-research-agent-workshop:latest
+```
+
+Expected platforms:
+
+- `linux/amd64`
+- `linux/arm64`
+
+## Local Pre-push Smoke
+
+When doing a local single-platform candidate build before the multi-arch push:
+
+```bash
+docker build -f docker-workshop/Dockerfile -t nissan/pi-research-agent-workshop:local .
+./docker-workshop/tests/smoke.sh nissan/pi-research-agent-workshop:local
 ```
 
 ## Participant-readiness preflight
@@ -59,16 +81,7 @@ if grep -RInE 'code=ac_|access_token|refresh_token|id_token|sk-(proj-)?[A-Za-z0-
 fi
 ```
 
-## Push
-
-Docker Hub:
-
-```bash
-docker push nissan/pi-research-agent-workshop:2026-05-roadshow
-docker push nissan/pi-research-agent-workshop:latest
-```
-
-GHCR equivalent, if selected:
+## GHCR Equivalent, If Selected
 
 ```bash
 docker tag nissan/pi-research-agent-workshop:2026-05-roadshow ghcr.io/nissan/pi-research-agent-workshop:2026-05-roadshow

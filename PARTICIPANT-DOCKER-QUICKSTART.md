@@ -15,16 +15,30 @@ You do not need the source repo to participate if Docker is working; the clone i
 docker pull nissan/pi-research-agent-workshop:latest
 ```
 
+The public image is built for both Apple Silicon/ARM (`linux/arm64`) and Intel/AMD Windows/Linux (`linux/amd64`). If your machine cannot pull the image, build from the cloned repo instead:
+
+```bash
+docker compose -f docker-compose.workshop.yml up -d --build
+```
+
 Current verified public digest:
 
 ```text
-sha256:ae32cc47b204690c7c065cbb9a3fabaed745f66fb963576c52a2f44dcd8c2e59
+sha256:d62bf9c120240587a0c5a11d88048b4868121c98edf5a6dde3ac17f1c9234bac
 ```
 
 Facilitators can also rebuild locally from the cloned repo if needed:
 
 ```bash
 docker build -f docker-workshop/Dockerfile -t nissan/pi-research-agent-workshop:local .
+```
+
+Windows note: this repo includes `.gitattributes` so shell/Python scripts keep Linux line endings when cloned on Windows. If you cloned before that file was present and see errors like `set -o pipefail\\r`, reclone the repo or run:
+
+```bash
+git config core.autocrlf false
+git rm --cached -r .
+git reset --hard
 ```
 
 ## 2. Choose your credential lane
@@ -131,6 +145,28 @@ In the web UI:
 5. Run the harness lab.
 6. In the later model-swap section, change the model and require model/domain-pack provenance.
 7. Peek at full solution only if stuck.
+
+### Example prompts to compare
+
+Baseline:
+
+```text
+Read AGENTS.md and inputs/generic-brief-request.md. Use sources/source-notes.md. Write outputs/research-brief-generic.md. Include source notes used, limitations, and open questions.
+```
+
+Specialized:
+
+```text
+Use the arxiv-literature-scan and pdf-evidence-reader skills. Read sources/domain-packs/artificial-intelligence.md. Search arXiv, rank useful papers, read the best PDF if available, then write outputs/research-brief-specialized.md and outputs/delta-notes.md. Include evidence labels, provider/model used, risks, and open questions.
+```
+
+Harnessed:
+
+```text
+Run the specialist research task under the harness policy. Use only allowed arXiv/evidence tools, write only approved output files, label evidence versus assumptions, run the harness check, and produce outputs/harness-report.json plus a short comparison against the generic baseline.
+```
+
+The important comparison is not just output quality. Look for whether the agent used better sources, labelled evidence, recorded provenance, and produced a checkable harness report.
 
 ## 5. CLI alternatives
 

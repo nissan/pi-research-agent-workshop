@@ -264,6 +264,17 @@
       </section>
 
       <section class="slide">
+        <div class="eyebrow">Reference takeaway</div>
+        <h2>Start with the smallest useful loop</h2>
+        <ul>
+          <li>Anthropic's agent guidance: simple composable patterns beat unnecessary framework complexity.</li>
+          <li>Use workflows when the path is known.</li>
+          <li>Use agents when the model needs to choose tools and process dynamically.</li>
+          <li>In this workshop: baseline first, then specialization, then harness.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
         <div class="eyebrow">7-12 minutes</div>
         <h2>Prompts ask. Harnesses enforce.</h2>
         <div class="grid">
@@ -301,6 +312,17 @@
       </section>
 
       <section class="slide">
+        <div class="eyebrow">Harness anatomy</div>
+        <h2>If it is not the model, it is the harness</h2>
+        <div class="grid">
+          <div class="box"><h3>State</h3><p>Files, memory, outputs, traces.</p></div>
+          <div class="box"><h3>Tools</h3><p>Search, PDF reading, ranking, shell, browser.</p></div>
+          <div class="box"><h3>Environment</h3><p>Docker, sandbox, mounted workspace.</p></div>
+          <div class="box"><h3>Feedback</h3><p>Checks, scorecards, retries, review loops.</p></div>
+        </div>
+      </section>
+
+      <section class="slide">
         <div class="eyebrow">12-16 minutes</div>
         <h2>Measuring improvement needs a baseline</h2>
         <div class="metric">
@@ -332,6 +354,17 @@
           <li>Did model swap change quality or just wording?</li>
           <li>Which failure should become the next harness rule?</li>
         </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Ratchet</div>
+        <h2>Every repeated mistake should become a harness change</h2>
+        <ol>
+          <li>Observe the failure.</li>
+          <li>Name the missing capability or boundary.</li>
+          <li>Add a tool, source, rule, check, or recovery path.</li>
+          <li>Rerun and compare the output.</li>
+        </ol>
       </section>
 
       <section class="slide">
@@ -375,6 +408,18 @@
         <div class="eyebrow">Close</div>
         <h2>Your workflow can become a capability</h2>
         <p>When the model, tools, context, harness, and evidence trail travel together, an agent stops being a demo and starts becoming a reusable product.</p>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">References</div>
+        <h2>Further reading</h2>
+        <ul>
+          <li>Anthropic: <code>Building effective agents</code></li>
+          <li>Augment Code: <code>Harness Engineering for AI Coding Agents</code></li>
+          <li>Mitchell Hashimoto: <code>My AI Adoption Journey</code></li>
+          <li>OpenAI: <code>Harness engineering</code></li>
+          <li>LangChain: <code>The Anatomy of an Agent Harness</code></li>
+        </ul>
       </section>
 
       <section class="slide">

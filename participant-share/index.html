@@ -52,8 +52,10 @@
     <a href="#baseline">3. Run the baseline: Pi login or OpenRouter</a>
     <a href="#specialize">4. Specialize the research agent</a>
     <a href="#harness">5. Use the harness</a>
+    <a href="#example-prompts">6. Example prompts</a>
     <a href="#openrouter">6. Model swap: OpenAI → OpenRouter or OpenRouter model A → B</a>
     <a href="#domain-packs">7. Choose a domain pack</a>
+    <a href="#references">Reference articles</a>
     <a href="#troubleshooting">8. Troubleshooting</a>
   </section>
 
@@ -97,7 +99,7 @@ docker run --rm -it \
     <p class="small">If you already reused stale auth, reset it with <code>docker volume rm pi_workshop_home</code> after stopping the container, then start again with the OpenRouter command above.</p>
     <p>Open:</p>
     <pre><code>http://localhost:8787</code></pre>
-    <p class="small">The image includes a starter workspace, fallback examples, a full solution folder if you get stuck, and UI recovery for common OpenRouter rate limits. Current verified digest: <code>sha256:ae32cc47b204690c7c065cbb9a3fabaed745f66fb963576c52a2f44dcd8c2e59</code>.</p>
+    <p class="small">The image includes a starter workspace, fallback examples, a full solution folder if you get stuck, and UI recovery for common OpenRouter rate limits. Current verified digest: <code>sha256:d62bf9c120240587a0c5a11d88048b4868121c98edf5a6dde3ac17f1c9234bac</code>.</p>
     <div class="callout warn"><strong>Stalled-run rule:</strong> every live run shows a <strong>Running...</strong> indicator. If OpenRouter returns a 429 rate limit, daily-limit message, or 402 insufficient-credit response, the app shows a clear limit message and copies fallback outputs automatically. If any other live model/tool run shows no visible progress for 3–5 minutes, stop waiting and click <strong>Use fallback sample outputs</strong>. If the browser or Docker CLI stops responding, restart Docker Desktop/Engine, rerun the same <code>docker run</code> command, then continue from fallback or the solution folder.</div>
   </section>
 
@@ -157,6 +159,17 @@ pi -p \
     </ol>
   </section>
 
+  <section id="example-prompts" class="card">
+    <h2>6. Example prompts to try in the web app</h2>
+    <p>These mirror the three learning moments: before specialization, after specialization, and under the harness.</p>
+    <h3>Baseline: generic agent</h3>
+    <pre><code>Read AGENTS.md and inputs/generic-brief-request.md. Use sources/source-notes.md. Write outputs/research-brief-generic.md. Include source notes used, limitations, and open questions.</code></pre>
+    <h3>Specialized: tools + domain context</h3>
+    <pre><code>Use the arxiv-literature-scan and pdf-evidence-reader skills. Read sources/domain-packs/artificial-intelligence.md. Search arXiv, rank useful papers, read the best PDF if available, then write outputs/research-brief-specialized.md and outputs/delta-notes.md. Include evidence labels, provider/model used, risks, and open questions.</code></pre>
+    <h3>Harnessed: enforce boundaries and measure delta</h3>
+    <pre><code>Run the specialist research task under the harness policy. Use only allowed arXiv/evidence tools, write only approved output files, label evidence versus assumptions, run the harness check, and produce outputs/harness-report.json plus a short comparison against the generic baseline.</code></pre>
+  </section>
+
   <section id="openrouter" class="card">
     <h2>6. Model swap</h2>
     <p>If you started with Pi login and an OpenAI Codex subscription, rerun the specialist with an OpenRouter model. If you started with OpenRouter, rerun the later specialist step with a second open model. Recommended first OpenRouter model:</p>
@@ -186,6 +199,17 @@ pi -p \
   --model z-ai/glm-4.5-air:free \
   "Read AGENTS.md, inputs/generic-brief-request.md, sources/source-notes.md, and sources/domain-packs/artificial-intelligence.md. Write outputs/research-brief-specialized.md and outputs/delta-notes.md. Include provider/model used, domain pack used, evidence labels, risks, recommended next action, and open questions. Run the harness check before completion."</code></pre>
     <div class="callout"><strong>Teaching point:</strong> swapping the LLM is easy. The important part is keeping model provenance, domain context, and harness checks stable enough that participants can compare outputs honestly.</div>
+  </section>
+
+  <section id="references" class="card">
+    <h2>Reference articles</h2>
+    <ul>
+      <li><a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic — Building effective agents</a></li>
+      <li><a href="https://www.augmentcode.com/guides/harness-engineering-ai-coding-agents">Augment Code — Harness Engineering for AI Coding Agents</a></li>
+      <li><a href="https://mitchellh.com/writing/my-ai-adoption-journey">Mitchell Hashimoto — My AI Adoption Journey</a></li>
+      <li><a href="https://openai.com/index/harness-engineering/">OpenAI — Harness engineering</a></li>
+      <li><a href="https://www.langchain.com/blog/the-anatomy-of-an-agent-harness">LangChain — The Anatomy of an Agent Harness</a></li>
+    </ul>
   </section>
 
   <section id="domain-packs" class="card">
@@ -275,7 +299,7 @@ docker run --rm -it -p 8788:8787 \
     </ul>
   </section>
 
-  <p class="footer">Redditech Academy · Pi.dev Specialist Agent Workshop · Public Docker image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:ae32cc47b204690c7c065cbb9a3fabaed745f66fb963576c52a2f44dcd8c2e59</code></p>
+  <p class="footer">Redditech Academy · Pi.dev Specialist Agent Workshop · Public Docker image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:d62bf9c120240587a0c5a11d88048b4868121c98edf5a6dde3ac17f1c9234bac</code></p>
 </main>
 </body>
 </html>

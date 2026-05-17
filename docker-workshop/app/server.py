@@ -264,10 +264,14 @@ class Handler(BaseHTTPRequestHandler):
 <button name="kind" value="generic">Requires Pi/OpenAI/Claude login: run generic agent</button>
 <button name="kind" value="specialized">Requires Pi/OpenAI/Claude login: run specialized arXiv agent</button>
 </form>{run_indicator('run-result')}<div id="run-result"></div></section>
-<section class="card"><h2>3. Harness lab</h2><p>Show why the agentic harness matters: loose prompt vs enforced policy + evidence gate.</p><a class="button" href="/harness">Open harness lab</a></section>
-<section class="card"><h2>4. Model swap lane</h2><p>Swap OpenAI → OpenRouter, or OpenRouter model A → OpenRouter model B, then tighten the harness around model provenance.</p><a class="button" href="/openrouter">Open model swap lab</a></section>
-<section class="card"><h2>5. Outputs</h2>{artifact_links()}<p><a class="button" href="/compare">Compare outputs</a> <a class="button" href="/traces">View tool traces</a></p></section>
-<section class="card"><h2>6. If stuck</h2><a class="button" href="/solution">Peek at the full solution</a></section>
+<section class="card"><h2>3. Example prompts</h2><p>Use these to understand the three workshop states before clicking the run buttons.</p>
+<h3>Before specialization: generic baseline</h3><pre>Read AGENTS.md and inputs/generic-brief-request.md. Use sources/source-notes.md. Write outputs/research-brief-generic.md. Include source notes used, limitations, and open questions.</pre>
+<h3>After specialization: tools + domain context</h3><pre>Use the arxiv-literature-scan and pdf-evidence-reader skills. Read sources/domain-packs/artificial-intelligence.md. Search arXiv, rank useful papers, read the best PDF if available, then write outputs/research-brief-specialized.md and outputs/delta-notes.md. Include evidence labels, provider/model used, risks, and open questions.</pre>
+<h3>Harnessed: enforce and measure</h3><pre>Run the specialist research task under the harness policy. Use only allowed arXiv/evidence tools, write only approved output files, label evidence versus assumptions, run the harness check, and produce outputs/harness-report.json plus a short comparison against the generic baseline.</pre></section>
+<section class="card"><h2>4. Harness lab</h2><p>Show why the agentic harness matters: loose prompt vs enforced policy + evidence gate.</p><a class="button" href="/harness">Open harness lab</a></section>
+<section class="card"><h2>5. Model swap lane</h2><p>Swap OpenAI → OpenRouter, or OpenRouter model A → OpenRouter model B, then tighten the harness around model provenance.</p><a class="button" href="/openrouter">Open model swap lab</a></section>
+<section class="card"><h2>6. Outputs</h2>{artifact_links()}<p><a class="button" href="/compare">Compare outputs</a> <a class="button" href="/traces">View tool traces</a></p></section>
+<section class="card"><h2>7. If stuck</h2><a class="button" href="/solution">Peek at the full solution</a></section>
 '''
         self.send_html(page('Pi Research Agent Workshop', body))
 
