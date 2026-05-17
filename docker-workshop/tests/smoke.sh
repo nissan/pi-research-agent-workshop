@@ -30,7 +30,15 @@ docker run --rm "$IMAGE" bash -lc '
   test ! -f /workshop/starter/outputs/research-brief-generic.md
   test -f /workshop/starter/outputs/sample-research-brief-generic.md
   test -f /workshop/solution/outputs/harness-report.json
-  timeout 20s python3 /workshop/starter/tools/arxiv_search.py "agentic retrieval" --max-results 1 >/tmp/arxiv.json
+  ok=0
+  for i in 1 2 3; do
+    if timeout 20s python3 /workshop/starter/tools/arxiv_search.py "agentic retrieval" --max-results 1 >/tmp/arxiv.json; then
+      ok=1
+      break
+    fi
+    sleep 2
+  done
+  test "$ok" -eq 1
   python3 /workshop/starter/tools/rank_papers.py --infile /tmp/arxiv.json --criteria "agentic retrieval evidence" --out /tmp/ranked.json >/tmp/rank.json
 '
 
@@ -39,10 +47,11 @@ docker run -d --name "$CID" -p "${PORT}:8787" "$IMAGE" >/dev/null
 sleep 3
 curl -fsS "http://localhost:${PORT}/health" >/dev/null
 curl -fsS "http://localhost:${PORT}/harness" | grep -q 'Harness Lab'
-curl -fsS "http://localhost:${PORT}/" | grep -q 'Requires OpenRouter key: run generic agent'
-curl -fsS "http://localhost:${PORT}/" | grep -q 'Requires OpenRouter key: run specialized arXiv agent'
-curl -fsS "http://localhost:${PORT}/" | grep -q 'run-result-indicator'
-curl -fsS "http://localhost:${PORT}/" | grep -q 'Running... this can take a few minutes'
+curl -fsS "http://localhost:${PORT}/" | grep -q 'Run generic agent with OpenRouter'
+curl -fsS "http://localhost:${PORT}/" | grep -q 'Run specialized arXiv agent with OpenRouter'
+curl -fsS "http://localhost:${PORT}/" | grep -q 'data-running="false"'
+curl -fsS "http://localhost:${PORT}/" | grep -q 'No run started yet'
+curl -fsS "http://localhost:${PORT}/" | grep -q 'data-disabled-by-credential="true"'
 curl -fsS "http://localhost:${PORT}/openrouter" | grep -q 'z-ai/glm-4.5-air:free'
 curl -fsS "http://localhost:${PORT}/openrouter" | grep -q 'qwen/qwen3-next-80b-a3b-instruct:free'
 curl -fsS "http://localhost:${PORT}/static/htmx.min.js" >/dev/null
