@@ -141,8 +141,12 @@ docker run --rm -it \
         <figcaption>Expected browser state after starting the image: health, credential lanes, and fallback option.</figcaption>
       </figure>
     </div>
-    <p class="small">The image includes a starter workspace, fallback examples, a full solution folder if you get stuck, and UI recovery for common OpenRouter rate limits. Current verified digest: <code>sha256:14162fca33e810037c6861dbbc059fed9cd0dc211cec93680c675efc5d2bdedd</code>.</p>
+    <p class="small">The image includes a starter workspace, fallback examples, a full solution folder if you get stuck, and UI recovery for common OpenRouter rate limits. Current verified digest: <code>sha256:a1ffac43d73f180130c4b348f5d290f2d03b3e9899d81663ac3685dfead721b6</code>.</p>
     <div class="callout warn"><strong>Stalled-run rule:</strong> every live run shows a <strong>Running...</strong> indicator. If OpenRouter returns a 429 rate limit, daily-limit message, or 402 insufficient-credit response, the app shows a clear limit message and copies fallback outputs automatically. If any other live model/tool run shows no visible progress for 3–5 minutes, stop waiting and click <strong>Use fallback sample outputs</strong>. If the browser or Docker CLI stops responding, restart Docker Desktop/Engine, rerun the same <code>docker run</code> command, then continue from fallback or the solution folder.</div>
+  </section>
+
+  <section class="card callout">
+    <strong>45-minute workshop path:</strong> open <code>http://localhost:8787/chat</code> first and click <strong>Run all three modes</strong>. Participants should see the end result chats in the browser before anyone is asked to inspect files or traces. Treat the JSON, markdown transcript, and harness report as follow-up material for after the workshop or the final Q&A.
   </section>
 
   <section id="baseline" class="card">
@@ -215,7 +219,7 @@ pi -p \
 
   <section id="chat-lab" class="card">
     <h2>6. Chat Lab: compare conversation modes</h2>
-    <p>The Chat Lab gives participants the ChatGPT-like surface Nissan asked for. Use one prompt and compare three modes. You can run one selected mode, run all three modes in sequence, download a markdown transcript, or clear the conversation before the next exercise.</p>
+    <p>The Chat Lab gives participants the ChatGPT-like surface Nissan asked for. During the workshop, use one prompt and click <strong>Run all three modes</strong> so the room sees the finished chats first. Use single-mode sends, transcript export, and artifact inspection later if time remains.</p>
     <ul>
       <li><strong>Plain chat</strong> — model-only answer, no tools, no harness, no artifacts.</li>
       <li><strong>Agent chat</strong> — tool/output surfaces available, harness off, useful but not enforced.</li>
@@ -225,9 +229,9 @@ pi -p \
     <pre><code>http://localhost:8787/chat</code></pre>
     <p>Useful artifacts:</p>
     <ul>
-      <li><code>outputs/chat-lab-history.json</code> — persisted conversation state.</li>
-      <li><code>outputs/chat-lab-transcript.md</code> — exportable transcript for facilitation notes.</li>
-      <li><code>outputs/chat-harness-report.json</code> — harness checks from the harnessed chat mode.</li>
+      <li><code>outputs/chat-lab-history.json</code> — persisted conversation state for later review.</li>
+      <li><code>outputs/chat-lab-transcript.md</code> — exportable transcript for facilitation notes or post-workshop follow-up.</li>
+      <li><code>outputs/chat-harness-report.json</code> — harness checks from the harnessed chat mode when participants want to inspect the deeper mechanics.</li>
     </ul>
     <div class="walkthrough">
       <figure>
@@ -390,7 +394,7 @@ docker run --rm -it -p 8788:8787 \
     </ul>
   </section>
 
-  <p class="footer">Redditech Academy · Pi.dev Specialist Agent Workshop · Public Docker image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:14162fca33e810037c6861dbbc059fed9cd0dc211cec93680c675efc5d2bdedd</code></p>
+  <p class="footer">Redditech Academy · Pi.dev Specialist Agent Workshop · Public Docker image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:a1ffac43d73f180130c4b348f5d290f2d03b3e9899d81663ac3685dfead721b6</code></p>
 </main>
 </body>
 </html>

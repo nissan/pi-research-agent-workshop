@@ -753,7 +753,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/chat":
             body = f"""
 <h1>Chat Lab</h1><p><a href="/">Home</a></p>
-<section class="card"><h2>Compare the same prompt three ways</h2><p>This is the ChatGPT-like workshop surface: model-only chat, tool-using agent chat, and harnessed agent chat. Conversation history is saved in <code>starter/outputs/chat-lab-history.json</code>.</p><div class="mode-summary"><div><strong>Plain</strong><span>No tools or policy.</span></div><div><strong>Agent</strong><span>Tools/output surfaces, harness off.</span></div><div><strong>Harnessed</strong><span>Policy, provenance, report.</span></div></div></section>
+<section class="card"><h2>Compare the same prompt three ways</h2><p>This is the ChatGPT-like workshop surface: model-only chat, tool-using agent chat, and harnessed agent chat. Conversation history is saved in <code>starter/outputs/chat-lab-history.json</code>.</p><p><strong>Workshop-fast path:</strong> for a 45-minute session, click <strong>Run all three modes</strong> first so participants can inspect the end-user chat results in the browser before reviewing artifacts or source files.</p><div class="mode-summary"><div><strong>Plain</strong><span>No tools or policy.</span></div><div><strong>Agent</strong><span>Tools/output surfaces, harness off.</span></div><div><strong>Harnessed</strong><span>Policy, provenance, report.</span></div></div></section>
 <section class="card"><form method="post" action="/chat" hx-post="/chat" hx-target="#chat-history" hx-swap="innerHTML">
 <label for="prompt"><strong>Prompt</strong></label>
 <textarea id="prompt" name="prompt" rows="4" placeholder="Ask for a research brief, paper comparison, or evidence summary.">Compare two recent retrieval-augmented generation papers and separate evidence from assumptions.</textarea>
@@ -762,8 +762,8 @@ class Handler(BaseHTTPRequestHandler):
 <label><input type="radio" name="mode" value="agent"> Agent chat - tools/domain packs, harness off</label>
 <label><input type="radio" name="mode" value="harnessed"> Harnessed agent chat - tools plus policy</label>
 </div>
-<button type="submit" name="action" value="single">Send selected mode</button>
 <button type="submit" name="action" value="all">Run all three modes</button>
+<button type="submit" name="action" value="single">Send selected mode</button>
 </form></section>
 <section class="card"><h2>Conversation</h2><form method="post" action="/chat-clear" hx-post="/chat-clear" hx-target="#chat-history" hx-swap="innerHTML"><button type="submit">Clear conversation</button> <a class="button" href="/chat-transcript">Download transcript</a></form><div id="chat-history">{render_chat_history()}</div></section>
 <section class="card"><h2>Artifacts</h2>{artifact_links()}<p><a class="button" href="/compare">Compare outputs</a> <a class="button" href="/harness">Harness lab</a> <a class="button" href="/chat-transcript">Export transcript</a></p></section>
@@ -811,7 +811,7 @@ class Handler(BaseHTTPRequestHandler):
 <h3>After specialization: tools + domain context</h3><pre>Use the arxiv-literature-scan and pdf-evidence-reader skills. Read sources/domain-packs/artificial-intelligence.md. Search arXiv, rank useful papers, read the best PDF if available, then write outputs/research-brief-specialized.md and outputs/delta-notes.md. Include evidence labels, provider/model used, risks, and open questions.</pre>
 <h3>Harnessed: enforce and measure</h3><pre>Run the specialist research task under the harness policy. Use only allowed arXiv/evidence tools, write only approved output files, label evidence versus assumptions, run the harness check, and produce outputs/harness-report.json plus a short comparison against the generic baseline.</pre></section>
 <section class="card"><h2>4. Harness lab</h2><p>Show why the agentic harness matters: loose prompt vs enforced policy + evidence gate.</p><a class="button" href="/harness">Open harness lab</a></section>
-<section class="card"><h2>5. Chat lab</h2><p>Compare a normal chat answer with a tool-using agent and a harnessed agent using the same prompt.</p><a class="button" href="/chat">Open chat lab</a></section>
+<section class="card"><h2>5. Chat lab</h2><p>Show the end-user result first: compare a normal chat answer with a tool-using agent and a harnessed agent using the same prompt.</p><a class="button" href="/chat">Open chat lab</a></section>
 <section class="card"><h2>6. Model swap lane</h2><p>Swap OpenAI to OpenRouter, or OpenRouter model A to OpenRouter model B, then tighten the harness around model provenance.</p><a class="button" href="/openrouter">Open model swap lab</a></section>
 <section class="card"><h2>7. Outputs</h2>{artifact_links()}<p><a class="button" href="/compare">Compare outputs</a> <a class="button" href="/traces">View tool traces</a></p></section>
 <section class="card"><h2>8. If stuck</h2><a class="button" href="/solution">Peek at the full solution</a></section>

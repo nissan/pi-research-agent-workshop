@@ -51,6 +51,10 @@
     <strong>Goal for the tester:</strong> confirm a participant can pull the published image, start it, enter the running container when needed, run each learning exercise, and record whether the expected outputs appear.
   </section>
 
+  <section class="card presenter">
+    <strong>45-minute workshop note:</strong> the primary participant experience is now the browser-level Chat Lab. Verify that the room can open <code>/chat</code>, click <strong>Run all three modes</strong>, and review the finished conversations before anyone is pushed into file inspection. Treat output files and traces as secondary, post-workshop exploration.
+  </section>
+
 
   <section class="card warn callout">
     <h2>Troubleshooting FAQ added</h2>
@@ -82,6 +86,7 @@ docker exec -it pi-research-agent-workshop bash</code></pre>
     <p>As you test, the presenter script should be making the “why” explicit, not just asking participants to click buttons.</p>
     <ul>
       <li><strong>Generic baseline:</strong> “First we see what a general agent does with minimal structure.”</li>
+      <li><strong>Chat-first framing:</strong> “For the workshop we review the finished chats in the browser first. The files and traces are there for deeper inspection later.”</li>
       <li><strong>Specialization:</strong> “Now we add task-specific tools, evidence sources, and domain knowledge.”</li>
       <li><strong>Harness:</strong> “Prompts ask; harnesses enforce. The harness creates boundaries, validates outputs, and leaves traces.”</li>
       <li><strong>Model swap:</strong> “The specialist architecture should survive swapping the underlying model — Pi/OpenAI Codex to OpenRouter, or OpenRouter model A to model B — but we must record model provenance and review quality.”</li>
@@ -97,7 +102,7 @@ docker exec -it pi-research-agent-workshop bash</code></pre>
 cd pi-research-agent-workshop</code></pre>
     <p>The source repo should be public and should contain the starter workspace, solution workspace, Docker workshop UI, fallback outputs, facilitator docs, and preflight script.</p>
     <pre><code>docker pull nissan/pi-research-agent-workshop:latest</code></pre>
-    <p>Current expected public digest: <code>sha256:14162fca33e810037c6861dbbc059fed9cd0dc211cec93680c675efc5d2bdedd</code>.</p>
+    <p>Current expected public digest: <code>sha256:a1ffac43d73f180130c4b348f5d290f2d03b3e9899d81663ac3685dfead721b6</code>.</p>
     <h3>Expected</h3>
     <ul class="checklist"><li>Pull completes successfully.</li><li>The final line shows <code>Status: Downloaded newer image</code> or <code>Image is up to date</code>.</li></ul>
     <div class="presenter"><strong>Presenter note:</strong> explain that everyone starts from the same container image, so differences during the workshop should come from credentials, prompts, domain choices, or model choices — not from mismatched local installs.</div>
@@ -119,6 +124,14 @@ docker run --rm -it \
     <h3>Expected</h3>
     <ul class="checklist"><li>Terminal prints “Pi Research Agent Workshop”.</li><li>Browser loads the workshop home page.</li><li>Health section shows Pi installed ✅ and workspace writable ✅.</li></ul>
     <div class="presenter"><strong>Presenter note:</strong> point out the UI is a teaching scaffold. Participants can use the buttons, but the same actions are inspectable from the shell.</div>
+  </section>
+
+  <section class="card">
+    <h2>2a. Chat-first workshop flow</h2>
+    <p>Open <code>http://localhost:8787/chat</code> and test the primary 45-minute workshop path before any shell-level artifact inspection.</p>
+    <h3>Expected</h3>
+    <ul class="checklist"><li>The page explains that <strong>Run all three modes</strong> is the workshop-fast path.</li><li>Clicking <strong>Run all three modes</strong> renders plain chat, agent chat, and harnessed agent chat in the browser.</li><li>The transcript export link exists, but the participant can understand the exercise without opening files first.</li><li><strong>Clear conversation</strong> resets the browser view for the next participant.</li></ul>
+    <div class="presenter"><strong>Presenter note:</strong> the room should inspect the finished chats first. Files such as <code>outputs/chat-lab-history.json</code>, <code>outputs/chat-lab-transcript.md</code>, and <code>outputs/chat-harness-report.json</code> are follow-up references, not the first teaching surface.</div>
   </section>
 
   <section class="card">
@@ -317,7 +330,7 @@ pi -p "Create a database-development specialist brief. Read AGENTS.md, inputs/ge
     </ul>
   </section>
 
-  <p class="footer">Redditech Academy · Pi.dev Specialist Research Agent Workshop · Image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:14162fca33e810037c6861dbbc059fed9cd0dc211cec93680c675efc5d2bdedd</code></p>
+  <p class="footer">Redditech Academy · Pi.dev Specialist Research Agent Workshop · Image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:a1ffac43d73f180130c4b348f5d290f2d03b3e9899d81663ac3685dfead721b6</code></p>
 </main>
 </body>
 </html>

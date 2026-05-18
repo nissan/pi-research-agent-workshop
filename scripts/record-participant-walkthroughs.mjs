@@ -119,24 +119,17 @@ async function main() {
 
   await record("06-chat-lab", async (page) => {
     await page.goto(baseUrl + "/chat", { waitUntil: "networkidle" });
-    await caption(page, "Step 6: use Chat Lab to compare the same prompt as plain chat, agent chat, and harnessed agent chat.");
+    await caption(page, "Step 6: use Chat Lab to show the end-user result first: plain chat, agent chat, and harnessed agent chat.");
     await page.getByLabel("Prompt").fill("Compare two recent retrieval-augmented generation papers and separate evidence from assumptions.");
-    await page.getByLabel(/Plain chat/i).check();
-    await page.getByRole("button", { name: /Send selected mode/i }).click();
+    await page.getByRole("button", { name: /Run all three modes/i }).click();
     await page.waitForSelector("text=Model-only answer");
-    await caption(page, "Plain chat answers conversationally, but does not use tools or write artifacts.");
-    await page.getByRole("radio", { name: /Agent chat - tools\/domain packs, harness off/i }).check();
-    await page.getByRole("button", { name: /Send selected mode/i }).click();
     await page.waitForSelector("text=Agent answer with tools available");
-    await caption(page, "Agent chat can use the workshop output surfaces, but the harness is off.");
-    await page.getByLabel(/Harnessed agent chat/i).check();
-    await page.getByRole("button", { name: /Send selected mode/i }).click();
     await page.waitForSelector("text=Harnessed agent answer");
-    await caption(page, "Harnessed chat adds policy checks, provenance, and a report artifact.");
+    await caption(page, "One click gives the room the three end-state chats to compare before any file inspection.");
     await page.getByRole("heading", { name: "Artifacts" }).scrollIntoViewIfNeeded();
-    await caption(page, "The conversation and harness report remain available after route changes.");
+    await caption(page, "The conversation and harness report remain available after route changes for later deeper review.");
     await page.getByRole("link", { name: /Export transcript/i }).scrollIntoViewIfNeeded();
-    await caption(page, "Export the transcript or clear the conversation before the next participant exercise.");
+    await caption(page, "Export the transcript or clear the conversation after the workshop or before the next participant exercise.");
   });
 }
 
