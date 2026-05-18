@@ -38,8 +38,11 @@ docker run --rm "$IMAGE" bash -lc '
     fi
     sleep 2
   done
-  test "$ok" -eq 1
-  python3 /workshop/starter/tools/rank_papers.py --infile /tmp/arxiv.json --criteria "agentic retrieval evidence" --out /tmp/ranked.json >/tmp/rank.json
+  if [ "$ok" -eq 1 ]; then
+    python3 /workshop/starter/tools/rank_papers.py --infile /tmp/arxiv.json --criteria "agentic retrieval evidence" --out /tmp/ranked.json >/tmp/rank.json
+  else
+    echo "ARXIV_SMOKE_SKIPPED: arXiv API unavailable or rate limited"
+  fi
 '
 
 cleanup
@@ -54,6 +57,11 @@ curl -fsS "http://localhost:${PORT}/" | grep -q 'No run started yet'
 curl -fsS "http://localhost:${PORT}/" | grep -q 'data-disabled-by-credential="true"'
 curl -fsS "http://localhost:${PORT}/openrouter" | grep -q 'z-ai/glm-4.5-air:free'
 curl -fsS "http://localhost:${PORT}/openrouter" | grep -q 'qwen/qwen3-next-80b-a3b-instruct:free'
+curl -fsS "http://localhost:${PORT}/chat" | grep -q 'Chat Lab'
+curl -fsS -X POST -d 'mode=plain&prompt=Compare+agent+modes' "http://localhost:${PORT}/chat" | grep -q 'Model-only answer'
+curl -fsS -X POST -d 'mode=agent&prompt=Compare+agent+modes' "http://localhost:${PORT}/chat" | grep -q 'Agent answer with tools available'
+curl -fsS -X POST -d 'mode=harnessed&prompt=Compare+agent+modes' "http://localhost:${PORT}/chat" | grep -q 'Harnessed agent answer'
+docker exec "$CID" bash -lc 'test -f /workshop/starter/outputs/chat-lab-history.json && test -f /workshop/starter/outputs/chat-harness-report.json'
 curl -fsS "http://localhost:${PORT}/solution" | grep -q 'Full solution folder'
 curl -fsS "http://localhost:${PORT}/static/htmx.min.js" >/dev/null
 curl -fsS "http://localhost:${PORT}/compare" | grep -q 'Harness report'

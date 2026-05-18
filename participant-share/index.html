@@ -56,11 +56,12 @@
     <a href="#baseline">3. Run the baseline: Pi login or OpenRouter</a>
     <a href="#specialize">4. Specialize the research agent</a>
     <a href="#harness">5. Use the harness</a>
-    <a href="#example-prompts">6. Example prompts</a>
-    <a href="#openrouter">6. Model swap: OpenAI → OpenRouter or OpenRouter model A → B</a>
-    <a href="#domain-packs">7. Choose a domain pack</a>
+    <a href="#chat-lab">6. Chat Lab: plain chat vs agent vs harnessed agent</a>
+    <a href="#example-prompts">7. Example prompts</a>
+    <a href="#openrouter">8. Model swap: OpenAI → OpenRouter or OpenRouter model A → B</a>
+    <a href="#domain-packs">9. Choose a domain pack</a>
     <a href="#references">Reference articles</a>
-    <a href="#troubleshooting">8. Troubleshooting</a>
+    <a href="#troubleshooting">10. Troubleshooting</a>
   </section>
 
   <section id="walkthroughs" class="card">
@@ -86,6 +87,10 @@
       <figure>
         <video controls muted preload="metadata" src="media/05-solution-recovery.webm"></video>
         <figcaption>Use the solution folder recovery path when someone is stuck.</figcaption>
+      </figure>
+      <figure>
+        <video controls muted preload="metadata" src="media/06-chat-lab.webm"></video>
+        <figcaption>Compare the same prompt as plain chat, agent chat, and harnessed agent chat.</figcaption>
       </figure>
     </div>
   </section>
@@ -136,7 +141,7 @@ docker run --rm -it \
         <figcaption>Expected browser state after starting the image: health, credential lanes, and fallback option.</figcaption>
       </figure>
     </div>
-    <p class="small">The image includes a starter workspace, fallback examples, a full solution folder if you get stuck, and UI recovery for common OpenRouter rate limits. Current verified digest: <code>sha256:77b7c8f9118b57d6d1c11b1e933cbdadb33b4ae12e0c7450d45bf81a88ea3469</code>.</p>
+    <p class="small">The image includes a starter workspace, fallback examples, a full solution folder if you get stuck, and UI recovery for common OpenRouter rate limits. Current verified digest: <code>sha256:375f1976d61e11aaad75672e29bbd9fabe088ac0e1b2ca4100fb01aee18792cc</code>.</p>
     <div class="callout warn"><strong>Stalled-run rule:</strong> every live run shows a <strong>Running...</strong> indicator. If OpenRouter returns a 429 rate limit, daily-limit message, or 402 insufficient-credit response, the app shows a clear limit message and copies fallback outputs automatically. If any other live model/tool run shows no visible progress for 3–5 minutes, stop waiting and click <strong>Use fallback sample outputs</strong>. If the browser or Docker CLI stops responding, restart Docker Desktop/Engine, rerun the same <code>docker run</code> command, then continue from fallback or the solution folder.</div>
   </section>
 
@@ -208,8 +213,27 @@ pi -p \
     </ol>
   </section>
 
+  <section id="chat-lab" class="card">
+    <h2>6. Chat Lab: compare conversation modes</h2>
+    <p>The Chat Lab gives participants the ChatGPT-like surface Nissan asked for. Use one prompt and compare three modes:</p>
+    <ul>
+      <li><strong>Plain chat</strong> — model-only answer, no tools, no harness, no artifacts.</li>
+      <li><strong>Agent chat</strong> — tool/output surfaces available, harness off, useful but not enforced.</li>
+      <li><strong>Harnessed agent chat</strong> — same conversational flow with policy checks, provenance, and a harness report.</li>
+    </ul>
+    <p>Open:</p>
+    <pre><code>http://localhost:8787/chat</code></pre>
+    <div class="walkthrough">
+      <figure>
+        <video controls muted preload="metadata" src="media/06-chat-lab.webm"></video>
+        <figcaption>Chat Lab walkthrough: plain chat, agent chat, harnessed chat, and preserved artifacts.</figcaption>
+      </figure>
+    </div>
+    <p class="small">The clean-room recording uses deterministic no-key demo responses so the workshop can be taught without spending API credits. Live credentialed runs remain available through the main baseline, specialized, OpenRouter, and harness flows.</p>
+  </section>
+
   <section id="example-prompts" class="card">
-    <h2>6. Example prompts to try in the web app</h2>
+    <h2>7. Example prompts to try in the web app</h2>
     <p>These mirror the three learning moments: before specialization, after specialization, and under the harness.</p>
     <h3>Baseline: generic agent</h3>
     <pre><code>Read AGENTS.md and inputs/generic-brief-request.md. Use sources/source-notes.md. Write outputs/research-brief-generic.md. Include source notes used, limitations, and open questions.</code></pre>
@@ -220,7 +244,7 @@ pi -p \
   </section>
 
   <section id="openrouter" class="card">
-    <h2>6. Model swap</h2>
+    <h2>8. Model swap</h2>
     <p>If you started with Pi login and an OpenAI Codex subscription, rerun the specialist with an OpenRouter model. If you started with OpenRouter, rerun the later specialist step with a second open model. Recommended first OpenRouter model:</p>
     <pre><code>z-ai/glm-4.5-air:free</code></pre>
     <p>Suggested later swap model, if available:</p>
@@ -268,7 +292,7 @@ pi -p \
   </section>
 
   <section id="domain-packs" class="card">
-    <h2>7. Choose a domain pack</h2>
+    <h2>9. Choose a domain pack</h2>
     <p>The starter includes four sample markdown packs under <code>/workshop/starter/sources/domain-packs/</code>.</p>
     <table>
       <thead><tr><th>Domain</th><th>File</th><th>Use when you want the agent to focus on…</th></tr></thead>
@@ -301,7 +325,7 @@ pi -p \
   </section>
 
   <section id="troubleshooting" class="card">
-    <h2>8. Troubleshooting</h2>
+    <h2>10. Troubleshooting</h2>
     <p>If provider auth, model access, network retrieval, or a long live run stalls, do not burn the workshop. After 3–5 minutes with no visible progress, use fallback outputs and continue the agent-pattern exercise.</p>
     <ul>
       <li><strong>Default generic button:</strong> uses Pi/OpenAI Codex login, not OpenRouter.</li>
@@ -320,7 +344,7 @@ pi -p \
   </section>
 
   <section class="card">
-    <h2>9. Common fixes</h2>
+    <h2>11. Common fixes</h2>
     <h3>Docker port is busy</h3>
     <pre><code>docker rm -f pi-research-agent-workshop
 # or use another port:
@@ -360,7 +384,7 @@ docker run --rm -it -p 8788:8787 \
     </ul>
   </section>
 
-  <p class="footer">Redditech Academy · Pi.dev Specialist Agent Workshop · Public Docker image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:77b7c8f9118b57d6d1c11b1e933cbdadb33b4ae12e0c7450d45bf81a88ea3469</code></p>
+  <p class="footer">Redditech Academy · Pi.dev Specialist Agent Workshop · Public Docker image: <code>nissan/pi-research-agent-workshop:latest</code> · digest <code>sha256:375f1976d61e11aaad75672e29bbd9fabe088ac0e1b2ca4100fb01aee18792cc</code></p>
 </main>
 </body>
 </html>

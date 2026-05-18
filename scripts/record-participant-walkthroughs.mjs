@@ -85,7 +85,7 @@ async function main() {
     await page.getByRole("button", { name: /use fallback sample outputs/i }).click();
     await page.waitForSelector("text=Fallback outputs copied");
     await caption(page, "Step 2: use fallback outputs when auth, rate limits, or setup would slow the room down.");
-    await page.getByRole("heading", { name: "6. Outputs" }).scrollIntoViewIfNeeded();
+    await page.getByRole("heading", { name: /Outputs/ }).scrollIntoViewIfNeeded();
     await caption(page, "The output list labels artifacts as fallback samples, so participants know what they are reading.");
     await page.getByRole("link", { name: /Compare outputs/i }).click();
     await page.waitForURL("**/compare");
@@ -115,6 +115,26 @@ async function main() {
     await page.getByRole("button", { name: /Copy solution into starter workspace/i }).click();
     await page.waitForSelector("text=Solution copied into starter workspace");
     await caption(page, "If someone gets blocked, copy the solution and keep the learning arc moving.");
+  });
+
+  await record("06-chat-lab", async (page) => {
+    await page.goto(baseUrl + "/chat", { waitUntil: "networkidle" });
+    await caption(page, "Step 6: use Chat Lab to compare the same prompt as plain chat, agent chat, and harnessed agent chat.");
+    await page.getByLabel("Prompt").fill("Compare two recent retrieval-augmented generation papers and separate evidence from assumptions.");
+    await page.getByLabel(/Plain chat/i).check();
+    await page.getByRole("button", { name: /Send/i }).click();
+    await page.waitForSelector("text=Model-only answer");
+    await caption(page, "Plain chat answers conversationally, but does not use tools or write artifacts.");
+    await page.getByRole("radio", { name: /Agent chat - tools\/domain packs, harness off/i }).check();
+    await page.getByRole("button", { name: /Send/i }).click();
+    await page.waitForSelector("text=Agent answer with tools available");
+    await caption(page, "Agent chat can use the workshop output surfaces, but the harness is off.");
+    await page.getByLabel(/Harnessed agent chat/i).check();
+    await page.getByRole("button", { name: /Send/i }).click();
+    await page.waitForSelector("text=Harnessed agent answer");
+    await caption(page, "Harnessed chat adds policy checks, provenance, and a report artifact.");
+    await page.getByRole("heading", { name: "Artifacts" }).scrollIntoViewIfNeeded();
+    await caption(page, "The conversation and harness report remain available after route changes.");
   });
 }
 
