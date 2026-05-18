@@ -33,6 +33,7 @@ RUN_STATE = {
 }
 ARTIFACT_META_FILE = ROOT / "starter" / "outputs" / ".artifact-meta.json"
 CHAT_HISTORY_FILE = ROOT / "starter" / "outputs" / "chat-lab-history.json"
+CHAT_TRANSCRIPT_FILE = ROOT / "starter" / "outputs" / "chat-lab-transcript.md"
 
 
 def read(path: Path | str, default: str = "") -> str:
@@ -386,6 +387,40 @@ def render_chat_history() -> str:
     return "".join(cards)
 
 
+def chat_transcript_markdown() -> str:
+    history = read_chat_history()
+    lines = ["# Chat Lab Transcript", ""]
+    if not history:
+        lines.append("No chat turns recorded yet.")
+        return "\n".join(lines) + "\n"
+    for index, item in enumerate(history, start=1):
+        lines.extend(
+            [
+                f"## Turn {index}: {chat_mode_label(item['mode'])}",
+                "",
+                f"Time: {item['stamp']}",
+                "",
+                "### Prompt",
+                item["prompt"] or "No prompt supplied.",
+                "",
+                "### Response",
+                item["response"],
+                "",
+                "### Trace / Enforcement",
+                item["trace"],
+                "",
+            ]
+        )
+    return "\n".join(lines)
+
+
+def write_chat_transcript() -> Path:
+    CHAT_TRANSCRIPT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    CHAT_TRANSCRIPT_FILE.write_text(chat_transcript_markdown(), encoding="utf-8")
+    mark_artifacts([CHAT_TRANSCRIPT_FILE], "live", "Chat Lab transcript")
+    return CHAT_TRANSCRIPT_FILE
+
+
 def kind_label(kind: str) -> str:
     mapping = {
         "generic": "generic default lane",
@@ -597,6 +632,16 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def send_text(self, content: str, filename: str | None = None) -> None:
+        data = content.encode("utf-8")
+        self.send_response(200)
+        self.send_header("content-type", "text/markdown; charset=utf-8")
+        self.send_header("content-length", str(len(data)))
+        if filename:
+            self.send_header("content-disposition", f'attachment; filename="{filename}"')
+        self.end_headers()
+        self.wfile.write(data)
+
     def do_GET(self) -> None:
         path = self.path.split("?", 1)[0]
         if path == "/static/style.css":
@@ -641,6 +686,10 @@ class Handler(BaseHTTPRequestHandler):
             return
         if path == "/partial/run-status":
             self.send_html(render_run_status_panel())
+            return
+        if path == "/chat-transcript":
+            transcript = write_chat_transcript()
+            self.send_text(read(transcript), "chat-lab-transcript.md")
             return
         if path == "/artifact":
             qs = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
@@ -704,19 +753,20 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/chat":
             body = f"""
 <h1>Chat Lab</h1><p><a href="/">Home</a></p>
-<section class="card"><h2>Compare the same prompt three ways</h2><p>This is the ChatGPT-like workshop surface: model-only chat, tool-using agent chat, and harnessed agent chat. Conversation history is saved in <code>starter/outputs/chat-lab-history.json</code>.</p></section>
+<section class="card"><h2>Compare the same prompt three ways</h2><p>This is the ChatGPT-like workshop surface: model-only chat, tool-using agent chat, and harnessed agent chat. Conversation history is saved in <code>starter/outputs/chat-lab-history.json</code>.</p><div class="mode-summary"><div><strong>Plain</strong><span>No tools or policy.</span></div><div><strong>Agent</strong><span>Tools/output surfaces, harness off.</span></div><div><strong>Harnessed</strong><span>Policy, provenance, report.</span></div></div></section>
 <section class="card"><form method="post" action="/chat" hx-post="/chat" hx-target="#chat-history" hx-swap="innerHTML">
 <label for="prompt"><strong>Prompt</strong></label>
-<textarea id="prompt" name="prompt" rows="4" placeholder="Ask for a research brief, paper comparison, or evidence summary."></textarea>
+<textarea id="prompt" name="prompt" rows="4" placeholder="Ask for a research brief, paper comparison, or evidence summary.">Compare two recent retrieval-augmented generation papers and separate evidence from assumptions.</textarea>
 <div class="mode-grid">
 <label><input type="radio" name="mode" value="plain" checked> Plain chat - no tools, no harness</label>
 <label><input type="radio" name="mode" value="agent"> Agent chat - tools/domain packs, harness off</label>
 <label><input type="radio" name="mode" value="harnessed"> Harnessed agent chat - tools plus policy</label>
 </div>
-<button type="submit">Send</button>
+<button type="submit" name="action" value="single">Send selected mode</button>
+<button type="submit" name="action" value="all">Run all three modes</button>
 </form></section>
-<section class="card"><h2>Conversation</h2><div id="chat-history">{render_chat_history()}</div></section>
-<section class="card"><h2>Artifacts</h2>{artifact_links()}<p><a class="button" href="/compare">Compare outputs</a> <a class="button" href="/harness">Harness lab</a></p></section>
+<section class="card"><h2>Conversation</h2><form method="post" action="/chat-clear" hx-post="/chat-clear" hx-target="#chat-history" hx-swap="innerHTML"><button type="submit">Clear conversation</button> <a class="button" href="/chat-transcript">Download transcript</a></form><div id="chat-history">{render_chat_history()}</div></section>
+<section class="card"><h2>Artifacts</h2>{artifact_links()}<p><a class="button" href="/compare">Compare outputs</a> <a class="button" href="/harness">Harness lab</a> <a class="button" href="/chat-transcript">Export transcript</a></p></section>
 """
             self.send_html(page("Chat Lab", body))
             return
@@ -770,25 +820,36 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         route = self.path.split("?", 1)[0]
+        if route == "/chat-clear":
+            CHAT_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+            CHAT_HISTORY_FILE.write_text("[]\n", encoding="utf-8")
+            if CHAT_TRANSCRIPT_FILE.exists():
+                CHAT_TRANSCRIPT_FILE.unlink()
+            self.send_html(render_chat_history())
+            return
+
         if route == "/chat":
             length = int(self.headers.get("content-length", "0"))
             form = parse_qs(self.rfile.read(length).decode())
             prompt = form.get("prompt", [""])[0].strip()
             mode = form.get("mode", ["plain"])[0]
-            response, trace, artifacts = make_chat_response(mode, prompt)
-            if artifacts:
-                mark_artifacts(artifacts, "live", chat_mode_label(mode))
             history = read_chat_history()
-            history.append(
-                {
-                    "mode": mode,
-                    "prompt": prompt,
-                    "response": response,
-                    "trace": trace,
-                    "stamp": datetime.now().strftime("%H:%M:%S"),
-                }
-            )
+            modes = ["plain", "agent", "harnessed"] if form.get("action", ["single"])[0] == "all" else [mode]
+            for selected_mode in modes:
+                response, trace, artifacts = make_chat_response(selected_mode, prompt)
+                if artifacts:
+                    mark_artifacts(artifacts, "live", chat_mode_label(selected_mode))
+                history.append(
+                    {
+                        "mode": selected_mode,
+                        "prompt": prompt,
+                        "response": response,
+                        "trace": trace,
+                        "stamp": datetime.now().strftime("%H:%M:%S"),
+                    }
+                )
             write_chat_history(history)
+            write_chat_transcript()
             self.send_html(render_chat_history())
             return
 

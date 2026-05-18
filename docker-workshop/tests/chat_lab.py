@@ -70,15 +70,26 @@ def main() -> None:
             assert "Harnessed agent answer" in fetch(
                 base + "/chat", {"mode": "harnessed", "prompt": "Compare RAG agents"}
             )
+            assert "Harnessed agent answer" in fetch(
+                base + "/chat", {"action": "all", "mode": "plain", "prompt": "Run the comparison"}
+            )
+            transcript = fetch(base + "/chat-transcript")
+            assert "# Chat Lab Transcript" in transcript
+            assert "Run the comparison" in transcript
 
             history_file = root / "starter" / "outputs" / "chat-lab-history.json"
             report_file = root / "starter" / "outputs" / "chat-harness-report.json"
+            transcript_file = root / "starter" / "outputs" / "chat-lab-transcript.md"
             assert history_file.exists()
             assert report_file.exists()
+            assert transcript_file.exists()
             history = json.loads(history_file.read_text())
             assert [item["mode"] for item in history[-3:]] == ["plain", "agent", "harnessed"]
             report = json.loads(report_file.read_text())
             assert report["harness_check_pass"] is True
+            cleared = fetch(base + "/chat-clear", {})
+            assert "No chat turns yet" in cleared
+            assert json.loads(history_file.read_text()) == []
         finally:
             proc.terminate()
             try:

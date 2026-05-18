@@ -24,3 +24,7 @@ textarea{width:100%;box-sizing:border-box;background:#0b0f14;color:#edf2f7;borde
 .chat-turn{border:1px solid #2b3848;border-radius:12px;padding:14px;margin:12px 0;background:#101820}
 .chat-meta{color:#a0aec0;font-size:13px;margin-bottom:8px}
 .chat-user{margin-bottom:8px}
+.mode-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+.mode-summary div{background:#101820;border:1px solid #2b3848;border-radius:12px;padding:12px}
+.mode-summary strong{display:block;margin-bottom:4px}
+.mode-summary span{display:block;color:#a0aec0;font-size:13px}
