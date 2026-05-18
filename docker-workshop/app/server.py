@@ -78,7 +78,24 @@ document.body.addEventListener("htmx:beforeRequest", (event) => {{
 document.body.addEventListener("htmx:afterSwap", syncRunButtons);
 </script>
 </head>
-<body><main>{body}</main></body>
+<body>
+<div class="page-bg"></div>
+<main>
+  <header class="shell-head">
+    <div>
+      <p class="eyebrow">Pi.dev Workshop</p>
+      <p class="shell-title">Specialist Research Agent Lab</p>
+    </div>
+    <div class="shell-actions">
+      <a class="shell-link" href="/">Home</a>
+      <a class="shell-link" href="/chat">Chat Lab</a>
+      <a class="shell-link" href="/harness">Harness Lab</a>
+      <a class="shell-link" href="/compare">Compare</a>
+    </div>
+  </header>
+  <section class="workspace-frame">{body}</section>
+</main>
+</body>
 </html>"""
 
 
