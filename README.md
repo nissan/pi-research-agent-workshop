@@ -42,9 +42,9 @@ For live model runs, use one of these credential paths:
 
 ## Core Docs
 
-- [20-minute presentation: Agents and Agent Harnesses](https://floral-vault-pz99.here.now/)
-- [Participant workshop guide](https://whole-pellet-8mtw.here.now/)
-- [Presentation source](presentation/index.html)
+- [20-minute presentation: Agents and Agent Harnesses](presentation/index.html)
+- [Participant workshop guide](participant-share/index.html)
+- [Participant tester worksheet](participant-tester-worksheet/index.html)
 - [Participant Docker Quickstart](PARTICIPANT-DOCKER-QUICKSTART.md)
 - [Agent harness reference notes](references/agent-harness-reading-notes.md)
 - [Run Workshop Locally](RUN-WORKSHOP-LOCALLY.md)
