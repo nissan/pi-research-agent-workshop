@@ -252,6 +252,28 @@
       </section>
 
       <section class="slide">
+        <div class="eyebrow">Pi.dev architecture</div>
+        <h2>Pi.dev gives the workshop a visible agent stack</h2>
+        <div class="grid">
+          <div class="box"><h3>Browser UI</h3><p>Participants can see the run surface, chat modes, harness lab, compare view, and recovery paths without extra setup.</p></div>
+          <div class="box"><h3>Pi agent runtime</h3><p>The same workshop uses a real agent runtime with prompts, tools, output files, and model swaps instead of a mocked demo.</p></div>
+          <div class="box"><h3>Filesystem artifacts</h3><p>Each run leaves files behind: briefs, transcripts, traces, and harness reports that can be inspected later.</p></div>
+          <div class="box"><h3>Container packaging</h3><p>Everything ships as one Docker image, so the environment is reproducible across laptops and easy to retest clean-room.</p></div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">Why it works for this workshop</div>
+        <h2>OpenClaw makes Pi.dev teachable in 45 minutes</h2>
+        <ul>
+          <li>OpenClaw frames the agent as a system, not just a prompt, so participants can see model, tools, context, and harness separately.</li>
+          <li>We can show end-user results first in the browser, then later reveal the exact files, prompts, and checks that produced them.</li>
+          <li>The harness lab makes reliability concrete: loose run, guarded run, scorecard, and report all live in one flow.</li>
+          <li>Because the stack is packaged and observable, the same workshop can be demoed, tested, and rerun clean-room without changing the teaching path.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
         <div class="eyebrow">3-7 minutes</div>
         <h2>Specialization is more than a better prompt</h2>
         <ul>
