@@ -18,8 +18,8 @@ from dataclasses import dataclass
 
 
 DEFAULT_DOCS = {
-    "participant_guide": "https://woody-hearth-gwed.here.now/",
-    "tester_worksheet": "https://clear-canyon-p86n.here.now/",
+    "participant_guide": "https://jazzy-quill-xvyx.here.now/",
+    "tester_worksheet": "https://jazzy-frost-z5sj.here.now/",
     "troubleshooting_faq": "https://inner-jubilee-6x73.here.now/",
 }
 DEFAULT_IMAGE = "nissan/pi-research-agent-workshop:latest"

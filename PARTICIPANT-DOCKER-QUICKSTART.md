@@ -24,7 +24,7 @@ docker compose -f docker-compose.workshop.yml up -d --build
 Current verified public digest:
 
 ```text
-sha256:d62bf9c120240587a0c5a11d88048b4868121c98edf5a6dde3ac17f1c9234bac
+sha256:77b7c8f9118b57d6d1c11b1e933cbdadb33b4ae12e0c7450d45bf81a88ea3469
 ```
 
 Facilitators can also rebuild locally from the cloned repo if needed:

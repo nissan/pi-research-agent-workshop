@@ -530,7 +530,7 @@ class Handler(BaseHTTPRequestHandler):
                 if p.is_file() and p.stat().st_size < 200000
             )
             body = (
-                "<h1>Full solution folder</h1><p><a href="/">Home</a></p>"
+                '<h1>Full solution folder</h1><p><a href="/">Home</a></p>'
                 "<p>Spoiler zone: use this when stuck.</p>"
                 '<form method="post" action="/copy-solution" hx-post="/copy-solution" hx-target="#solution-copy" hx-swap="innerHTML"><button type="submit">Copy solution into starter workspace</button></form>'
                 '<div id="solution-copy"></div>'
@@ -624,14 +624,18 @@ class Handler(BaseHTTPRequestHandler):
         if route == "/copy-solution":
             dst = ROOT / "starter"
             src = ROOT / "solution"
+
+            def copy_into(source: Path, target: Path) -> None:
+                if source.is_dir():
+                    target.mkdir(parents=True, exist_ok=True)
+                    for child in source.iterdir():
+                        copy_into(child, target / child.name)
+                    return
+                shutil.copy2(source, target)
+
             for item in src.iterdir():
                 target = dst / item.name
-                if item.is_dir():
-                    if target.exists():
-                        shutil.rmtree(target)
-                    shutil.copytree(item, target)
-                elif item.is_file():
-                    shutil.copy2(item, target)
+                copy_into(item, target)
             self.send_html("<p>Solution copied into starter workspace. You can now inspect or run it.</p>")
             return
 
@@ -718,4 +722,3 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
-
